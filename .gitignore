@@ -1,0 +1,10 @@
+node_modules
+dist
+!.env.temp
+.env
+.env.*
+.idea
+db/config.json
+DigiCertGlobalRootCA.crt.pem
+*.log
+coverage
