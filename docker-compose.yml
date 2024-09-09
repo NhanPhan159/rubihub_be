@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  database:
+    container_name: chatbot_database
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: qwerty123
+    volumes:
+      - database:/data/db
+    restart: on-failure
+
+  app:
+    container_name: chatbot_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      MONGO_URI: mongodb://root:qwerty123@database:27017
+    depends_on:
+      - database
+
+volumes:
+  database:
+    name: chatbot_database
+  app:
+    name: chatbot_backend
