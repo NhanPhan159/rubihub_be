@@ -2,7 +2,7 @@ name: Build and deploy a container to an Azure Web App
 
 env:
   AZURE_WEBAPP_NAME: chatbot-be
-  AZURE_CONTAINER_REGISTRY: chatbotBE.azurecr.io
+  AZURE_CONTAINER_REGISTRY: chatbotbe.azurecr.io
   AZURE_RESOURCE_GROUP: pmt-resource-v1
   AZURE_CONTAINER_APP_NAME: chatbot-be
 
