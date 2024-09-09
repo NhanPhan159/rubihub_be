@@ -2,8 +2,8 @@ name: Build and deploy a container to an Azure Web App
 
 env:
   AZURE_WEBAPP_NAME: chatbot-be
-  AZURE_CONTAINER_REGISTRY: ghcr.io
-  AZURE_RESOURCE_GROUP: chatbot-rg
+  AZURE_CONTAINER_REGISTRY: chatbotBE.azurecr.io
+  AZURE_RESOURCE_GROUP: pmt-resource-v1
   AZURE_CONTAINER_APP_NAME: chatbot-be
 
 on:
@@ -46,12 +46,21 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Log in to Azure Container Registry
+        run: |
+          az acr login --name ${{ env.AZURE_CONTAINER_REGISTRY }}
+
+      - name: Build and push container image to Azure Container Registry
+        run: |
+          docker build -t ${{ env.AZURE_CONTAINER_REGISTRY }}/chatbot-be:latest .
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}/chatbot-be:latest
+
       - name: Deploy to Azure Container Apps
         run: |
           az containerapp update \
             --name ${{ env.AZURE_CONTAINER_APP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --image ghcr.io/${{ github.repository }}:latest \
-            --registry-server ghcr.io \
-            --registry-username ${{ github.actor }} \
-            --registry-password ${{ secrets.GITHUB_TOKEN }}
+            --image ${{ env.AZURE_CONTAINER_REGISTRY }}/chatbot-be:latest \
+            --registry-server ${{ env.AZURE_CONTAINER_REGISTRY }} \
+            --registry-username ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME }} \
+            --registry-password ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD }}
