@@ -10,6 +10,7 @@ import router from './routes';
 import { errorHandler } from './middlewares';
 import configs from './configs';
 import { logger } from './utils';
+import { connectToDb } from './data';
 
 const packageJson = require('../package.json');
 
@@ -64,7 +65,8 @@ const packageJson = require('../package.json');
   app.use(router);
   app.use(errorHandler);
 
-  app.listen(port, () => {
+  app.listen(port, async () => {
+    await connectToDb();
     console.info(`⚡️[server]: Server is running at http://localhost:${port}`);
   });
 })();
