@@ -17,9 +17,9 @@ const packageJson = require('../package.json');
         swaggerDefinition: {
             openapi: '3.0.0',
             info: {
-                title: 'World Population API',
+                title: 'Chatbot API',
                 version: packageJson.version,
-                description: 'APIs for World Population backend',
+                description: 'APIs for English Chatbot',
             },
             components: {
                 securitySchemes: {
