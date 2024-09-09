@@ -62,7 +62,7 @@ const packageJson = require('../package.json');
 
   app.use(cors());
   app.use(bodyParser.json());
-  app.use(router);
+  app.use('/api', router);
   app.use(errorHandler);
 
   app.listen(port, async () => {
