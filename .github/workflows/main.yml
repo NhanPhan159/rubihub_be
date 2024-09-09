@@ -3,7 +3,7 @@ name: Build and deploy a container to an Azure Web App
 env:
   AZURE_WEBAPP_NAME: chatbot-be
   AZURE_CONTAINER_REGISTRY: chatbotbe.azurecr.io
-  AZURE_RESOURCE_GROUP: pmt-resource-v1
+  AZURE_RESOURCE_GROUP: chatbotResources
   AZURE_CONTAINER_APP_NAME: chatbot-be
 
 on:
@@ -49,7 +49,7 @@ jobs:
 
       - name: Log in to Azure Container Registry
         run: |
-          az acr login --name ${{ env.AZURE_CONTAINER_REGISTRY }}
+          sudo az acr login --name ${{ env.AZURE_CONTAINER_REGISTRY }}
 
       - name: Build and push container image to Azure Container Registry
         run: |
