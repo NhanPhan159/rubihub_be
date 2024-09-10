@@ -1,7 +1,8 @@
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai'
+import configs from '../configs';
 
-const MODEL_NAME = "gemini-1.5-flash";
-const API_KEY = process.env.API_KEY!;
+const MODEL_NAME = configs.AI_GENERATIVE.MODEL_NAME;
+const API_KEY = configs.AI_GENERATIVE.API_KEY
 
 export const chatResponse = async (userInput: string) => {
   const genAI = new GoogleGenerativeAI(API_KEY);
