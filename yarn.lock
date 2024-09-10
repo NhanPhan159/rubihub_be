@@ -101,6 +101,11 @@
   resolved "https://registry.yarnpkg.com/@eslint/object-schema/-/object-schema-2.1.4.tgz#9e69f8bb4031e11df79e03db09f9dbbae1740843"
   integrity sha512-BsWiH1yFGjXXS2yvrf5LyuoSIIbPrGUWob917o+BTKuZ7qJdxX8aJLRxs1fS9n6r7vESrq1OUqb68dANcFXuQQ==
 
+"@google/generative-ai@^0.17.1":
+  version "0.17.1"
+  resolved "https://registry.yarnpkg.com/@google/generative-ai/-/generative-ai-0.17.1.tgz#6cd40d7489abf4d22e3bbb06e686bd03610deedc"
+  integrity sha512-TgWz02c5l2XJlEDys81UVat5+Qg9xqmYah7tQt6xlsBwFvzIFPz64aZFGd1av2sxT22NsssqLATjNsusAIJICA==
+
 "@hapi/hoek@^9.0.0", "@hapi/hoek@^9.3.0":
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"
