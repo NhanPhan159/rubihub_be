@@ -1,1 +1,2 @@
-export * from "./chatService"
+export * from './chatService';
+export * from './userService';

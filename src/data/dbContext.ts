@@ -2,6 +2,7 @@ import mongoose, {
   ClientSession,
   Collection,
   Connection,
+  Document,
   Model,
 } from 'mongoose';
 import { uuid } from 'uuidv4';

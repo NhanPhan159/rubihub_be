@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import { ValidationError } from 'joi';
+
 import { AppError } from '../contracts';
 import { logger } from '../utils';
 
@@ -12,17 +14,13 @@ export const errorHandler = (
 
   logger.error(err);
 
-  if (err instanceof AppError) {
-    res.status(err.httpStatusCode).json({
-      errorCode,
-      message: err.message,
-      details: err.details,
-    });
+  if (err instanceof ValidationError) {
+    errorCode = 'INVALID_INPUT_DATA';
+    res.status(400);
+  } else if (err instanceof AppError) {
+    res.status(err.httpStatusCode);
   } else {
-    res.status(500).json({
-      errorCode: 'INTERNAL_SERVER_ERROR',
-      message: 'Something went wrong',
-    });
+    res.status(500);
   }
 
   res.json({

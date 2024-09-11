@@ -3,7 +3,7 @@ export class AppError extends Error {
     message?: string,
     private _errorCode: string = 'INTERNAL_SERVER_ERROR',
     private _httpStatusCode: number = 500,
-    private _details: Record<string, any> = {},
+    private _details?: Record<string, any>,
   ) {
     super(message);
   }
