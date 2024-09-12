@@ -2,21 +2,19 @@ import { ExtractDoc } from 'ts-mongoose';
 import { dbContext, UserSchema, useTransaction } from '../data';
 import { AggregatePaginateModel } from 'mongoose';
 
-import { CreateUserData, User } from '../contracts';
+import { CreateUserData, UserDetails } from '../contracts';
 import { generateSalt, hashPassword } from '../utils';
-import { ExistingEmailError } from '../errors';
+import { ExistingEmailError, UserNotFoundError } from '../errors';
 
 type UserDocument = ExtractDoc<typeof UserSchema>;
 
-let model: AggregatePaginateModel<UserDocument>;
+const model = dbContext.model<UserDocument>(
+  'User',
+) as AggregatePaginateModel<UserDocument>;
 
-(async (): Promise<void> => {
-  model = dbContext.model<UserDocument>(
-    'User',
-  ) as AggregatePaginateModel<UserDocument>;
-})();
-
-export const createUser = async (userData: CreateUserData): Promise<User> => {
+export const createUser = async (
+  userData: CreateUserData,
+): Promise<UserDetails> => {
   const existingEmail = (await model.findOne({ email: userData.email }))?.email;
 
   if (existingEmail) {
@@ -41,4 +39,16 @@ export const createUser = async (userData: CreateUserData): Promise<User> => {
   return {
     ...createdUser[0].toObject(),
   };
+};
+
+export const findUserByEmail = async (email: string): Promise<UserDetails> => {
+  const existingUser = await model.findOne({ email }).exec();
+  if (!existingUser) throw new UserNotFoundError();
+  return existingUser;
+};
+
+export const findUserById = async (id: string): Promise<UserDetails> => {
+  const existingUser = await model.findById(id).exec();
+  if (!existingUser) throw new UserNotFoundError();
+  return existingUser;
 };

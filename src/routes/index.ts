@@ -1,10 +1,12 @@
 import { Router } from 'express';
+import authRouter from './auth';
 import chatRouter from './chat';
-import userRouter from './user';
+import { isAuthenticated } from '../middlewares';
 
 const router = Router();
 
+router.use('/auth', authRouter);
+router.use(isAuthenticated);
 router.use('/chat', chatRouter);
-router.use('/users', userRouter);
 
 export default router;
