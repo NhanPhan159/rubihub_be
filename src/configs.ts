@@ -8,6 +8,15 @@ const configs = {
   SWAGGER_ENABLED: [true, 'true'].includes(
     process.env.SWAGGER_ENABLED || false,
   ),
+  AI_GENERATIVE: {
+    MODEL_NAME: 'gemini-1.5-flash',
+    API_KEY: process.env.API_KEY!,
+  },
+  JWT: {
+    ALGORITHM: 'HS256',
+    EXPIRE_IN: '24h',
+    PRIVATE_KEY: process.env.SECRET_KEY || 'secret',
+  },
 };
 
 export default configs;

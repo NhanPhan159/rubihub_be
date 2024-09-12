@@ -1,9 +1,12 @@
 import { Router } from 'express';
+import authRouter from './auth';
+import chatRouter from './chat';
+import { isAuthenticated } from '../middlewares';
 
 const router = Router();
 
-router.get('/', (_req, res) => {
-    res.json({ message: 'Hello World' });
-});
+router.use('/auth', authRouter);
+router.use(isAuthenticated);
+router.use('/chat', chatRouter);
 
 export default router;

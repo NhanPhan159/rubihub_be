@@ -1,0 +1,3 @@
+export const STRING_INPUT_MAX_LENGTH = 32;
+
+export const LONG_STRING_INPUT_MAX_LENGTH = 120;
