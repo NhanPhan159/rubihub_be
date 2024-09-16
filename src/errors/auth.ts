@@ -1,4 +1,11 @@
 import * as Contract from '../contracts';
+
+export class UnauthenticatedError extends Contract.AppError {
+  constructor() {
+    super('Unauthenticated', 'UNAUTHENTICATED', 401);
+  }
+}
+
 export class ExpireTokenError extends Contract.AppError {
   constructor() {
     super('Token is expired', 'TOKEN_IS_EXPIRED', 400);
