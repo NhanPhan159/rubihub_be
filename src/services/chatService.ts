@@ -67,7 +67,7 @@ export const createChat = async (chatData: CreateChatData): Promise<Chat> => {
 };
 
 export const chatResponse = async (chatData: ChatRequest, userId?: Types.ObjectId)
-: Promise<{ newChat: Chat; newConversation?: Conversation }> => {
+  : Promise<{ newChat: Chat; newConversation?: Conversation }> => {
   const result = await chat.sendMessage(chatData.message);
   const response = result.response.text();
 

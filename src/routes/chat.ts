@@ -8,7 +8,7 @@ router.post('/private', isAuthenticated, async (req: Request, res: Response, nex
   try {
     const chatData = req.body?.chatData;
     const userId = req.body?.user.id
-    
+
     if (
       !chatData ||
       typeof chatData.message !== 'string' ||
@@ -18,7 +18,7 @@ router.post('/private', isAuthenticated, async (req: Request, res: Response, nex
         .status(400)
         .json({ error: 'Invalid request body. chatData cannot be empty.' });
     }
-  
+
     const response = await chatResponse(chatData, userId);
     res.status(201).json({ response });
   } catch (error) {
@@ -38,7 +38,7 @@ router.post('/public', async (req: Request, res: Response, next: NextFunction) =
         .status(400)
         .json({ error: 'Invalid request body. chatData cannot be empty.' });
     }
-  
+
     const response = await chatResponse(chatData);
     res.status(201).json({ response });
   } catch (error) {
@@ -51,10 +51,10 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const chats = await findChatsByConversation(conversationData);
-  
+
     res.status(200).json({ chats });
   } catch (error) {
-    next(error)    
+    next(error)
   }
 });
 
