@@ -1,8 +1,8 @@
 import { ExtractDoc } from 'ts-mongoose';
 import { dbContext, UserSchema, useTransaction } from '../data';
-import { AggregatePaginateModel } from 'mongoose';
+import { AggregatePaginateModel, Types } from 'mongoose';
 
-import { CreateUserData, UserDetails } from '../contracts';
+import { CreateUserData, User, UserDetails } from '../contracts';
 import { generateSalt, hashPassword } from '../utils';
 import { ExistingEmailError, UserNotFoundError } from '../errors';
 
@@ -41,14 +41,28 @@ export const createUser = async (
   };
 };
 
-export const findUserByEmail = async (email: string): Promise<UserDetails> => {
-  const existingUser = await model.findOne({ email }).exec();
-  if (!existingUser) throw new UserNotFoundError();
+export const findUser = async (userData: UserDetails): Promise<User> => {
+  const existingUser = await model.findById(userData._id);
+
+  if (!existingUser) {
+    throw new UserNotFoundError();
+  }
+
   return existingUser;
 };
 
-export const findUserById = async (id: string): Promise<UserDetails> => {
+export const findUserByEmail = async (email: string): Promise<UserDetails> => {
+  const existingUser = await model.findOne({ email }).exec();
+  if (!existingUser) throw new UserNotFoundError();
+
+  const { password, __v, ...userDetails } = existingUser.toObject();
+  return userDetails;
+};
+
+export const findUserById = async (id: Types.ObjectId): Promise<UserDetails> => {
   const existingUser = await model.findById(id).exec();
   if (!existingUser) throw new UserNotFoundError();
-  return existingUser;
+
+  const { password, __v, ...userDetails } = existingUser.toObject();
+  return userDetails;
 };
