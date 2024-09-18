@@ -9,9 +9,12 @@ router.get(
     try {
       const userId = req.body.user.id;
 
-      const user = await findUserById(userId);
+      const { _id, ...user } = await findUserById(userId);
 
-      res.status(200).json({ user });
+      res.status(200).json({
+        ...user,
+        id: _id,
+      });
     } catch (error) {
       next(error);
     }
