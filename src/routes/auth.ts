@@ -4,9 +4,25 @@ import {
   UserCredentials,
   STRING_INPUT_MAX_LENGTH,
   VALID_EMAIL_REGEX,
+  UserDetails,
 } from '../contracts';
 import Joi from 'joi';
-import { authenticateUser, createUser } from '../services';
+import {
+  authenticateUser,
+  checkIfEmailExist,
+  createUser,
+  findUserByEmail,
+  getTokens,
+} from '../services';
+import configs from '../configs';
+import {
+  clientToken,
+  generateJWT,
+  generateRandomPassword,
+  generateUrlGoogle,
+} from '../utils';
+import { ObjectId } from 'mongodb';
+import axios from 'axios';
 
 const router = Router();
 
@@ -56,6 +72,65 @@ router.post(
       const user = await createUser(validatedData);
 
       res.status(201).json({ user });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.get('/google', (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const urlGoogle = generateUrlGoogle();
+
+    res.send(urlGoogle);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get(
+  `/${configs.GOOGLE_AUTH.REDIRECT_URI}`,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const code = req.query.code as string;
+
+      const { id_token, access_token } = await getTokens({
+        code,
+        ...clientToken,
+      });
+
+      const response = await axios.get(
+        `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
+        {
+          headers: {
+            Authorization: `Bearer ${id_token}`,
+          },
+        },
+      );
+
+      const data = await response.data;
+
+      let user: UserDetails = {
+        email: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        _id: new ObjectId(),
+      };
+
+      if (!(await checkIfEmailExist(data.email))) {
+        const userCreate: CreateUserData = {
+          email: data.email,
+          password: generateRandomPassword(8),
+        };
+        user = await createUser(userCreate);
+      } else {
+        user = await findUserByEmail(data.email);
+      }
+
+      const accessToken = generateJWT({ id: user._id, email: user.email });
+
+      res.cookie('auth_gg', accessToken, { secure: true });
+      res.redirect(configs.GOOGLE_AUTH.UI_ROOT_URI);
     } catch (error) {
       next(error);
     }

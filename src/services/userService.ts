@@ -59,10 +59,18 @@ export const findUserByEmail = async (email: string): Promise<UserDetails> => {
   return userDetails;
 };
 
-export const findUserById = async (id: Types.ObjectId): Promise<UserDetails> => {
+export const findUserById = async (
+  id: Types.ObjectId,
+): Promise<UserDetails> => {
   const existingUser = await model.findById(id).exec();
   if (!existingUser) throw new UserNotFoundError();
 
   const { password, __v, ...userDetails } = existingUser.toObject();
   return userDetails;
+};
+
+export const checkIfEmailExist = async (email: string): Promise<Boolean> => {
+  const existingUser = await model.findOne({ email }).exec();
+  if (existingUser) return true;
+  return false;
 };

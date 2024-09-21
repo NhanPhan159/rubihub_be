@@ -27,3 +27,8 @@ export class IncorrectPasswordError extends Contract.AppError {
     super('Incorrect password', 'INCORRECT_PASSWORD', 400);
   }
 }
+export class GoogleAuthError extends Contract.AppError {
+  constructor() {
+    super('Google service error', 'GOOGLE_SERVICE_ERROR', 400);
+  }
+}
