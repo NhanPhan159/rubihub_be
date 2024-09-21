@@ -90,6 +90,7 @@ export const chatResponse = async (
         response,
         conversationId: newConversation._id,
       };
+
       const newChat = await createChat(chatToCreate);
 
       return { newChat, newConversation };
