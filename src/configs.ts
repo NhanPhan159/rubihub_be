@@ -71,6 +71,19 @@ const configs = {
     EXPIRE_IN: '24h',
     PRIVATE_KEY: process.env.SECRET_KEY || 'secret',
   },
+  GOOGLE_AUTH: {
+    URL: 'https://accounts.google.com/o/oauth2/v2/auth',
+    SERVER_ROOT_URI: process.env.SERVER_ROOT_URI || 'http://localhost:3000',
+    REDIRECT_URI: 'google-code',
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
+    SCOPES: [
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ],
+    URL_TOKEN: 'https://oauth2.googleapis.com/token',
+    UI_ROOT_URI: process.env.UI_ROOT_URI || 'http://localhost:3000',
+  },
 };
 
 export default configs;

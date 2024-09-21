@@ -21,7 +21,9 @@ let conversationModel: AggregatePaginateModel<ConversationDocument>;
   ) as AggregatePaginateModel<ConversationDocument>;
 })();
 
-export const createConversation = async (conversationData: CreateConversationData): Promise<Conversation> => {
+export const createConversation = async (
+  conversationData: CreateConversationData,
+): Promise<Conversation> => {
   const createdConversation = await useTransaction(async (session) => {
     return await conversationModel.create([conversationData], { session });
   });
@@ -29,7 +31,9 @@ export const createConversation = async (conversationData: CreateConversationDat
   return createdConversation[0];
 };
 
-export const findConversation = async (conversationData: ConversationDetails): Promise<Conversation> => {
+export const findConversation = async (
+  conversationData: ConversationDetails,
+): Promise<Conversation> => {
   const existingConversation = await conversationModel.findById(
     conversationData._id,
   );
@@ -41,7 +45,9 @@ export const findConversation = async (conversationData: ConversationDetails): P
   return existingConversation;
 };
 
-export const findConversationsByUser = async (userData: UserDetails): Promise<Conversation[]> => {
+export const findConversationsByUser = async (
+  userData: UserDetails,
+): Promise<Conversation[]> => {
   const existingUser = await findUser(userData);
   const existingConversations = await conversationModel.find({
     userId: existingUser._id,
@@ -53,7 +59,9 @@ export const findConversationsByUser = async (userData: UserDetails): Promise<Co
   return existingConversations;
 };
 
-export const findConversationById = async (conversationData: ChatConversationId): Promise<Conversation> => {
+export const findConversationById = async (
+  conversationData: ChatConversationId,
+): Promise<Conversation> => {
   const conversationId = conversationData.conversationId;
 
   const existingConversation = await conversationModel.findById(conversationId);

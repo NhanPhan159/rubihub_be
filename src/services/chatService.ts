@@ -66,12 +66,14 @@ export const createChat = async (chatData: CreateChatData): Promise<Chat> => {
   return createdChat[0];
 };
 
-export const chatResponse = async (chatData: ChatRequest, userId?: Types.ObjectId)
-  : Promise<{ newChat: Chat; newConversation?: Conversation }> => {
+export const chatResponse = async (
+  chatData: ChatRequest,
+  userId?: Types.ObjectId,
+): Promise<{ newChat: Chat; newConversation?: Conversation }> => {
   const result = await chat.sendMessage(chatData.message);
   const response = result.response.text();
 
-  const conversationId = chatData.conversationId
+  const conversationId = chatData.conversationId;
 
   if (userId) {
     await findUserById(userId);
@@ -83,7 +85,11 @@ export const chatResponse = async (chatData: ChatRequest, userId?: Types.ObjectI
       };
       const newConversation = await createConversation(conversationToCreate);
 
-      const chatToCreate: CreateChatData = { ...chatData, response, conversationId: newConversation._id };
+      const chatToCreate: CreateChatData = {
+        ...chatData,
+        response,
+        conversationId: newConversation._id,
+      };
       const newChat = await createChat(chatToCreate);
 
       return { newChat, newConversation };
@@ -98,10 +104,12 @@ export const chatResponse = async (chatData: ChatRequest, userId?: Types.ObjectI
     return { newChat };
   }
 
-  throw new ConversationNotFoundError()
+  throw new ConversationNotFoundError();
 };
 
-export const findChatsByConversation = async (conversationData: ConversationDetails): Promise<Chat[]> => {
+export const findChatsByConversation = async (
+  conversationData: ConversationDetails,
+): Promise<Chat[]> => {
   const existingConversation = await findConversation(conversationData);
   const existingChats = await chatModel.find({
     conversationId: existingConversation._id,

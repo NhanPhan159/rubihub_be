@@ -13,7 +13,4 @@ export type ConversationDetails = Omit<
   'createdAt' | 'updatedAt' | '__v'
 >;
 
-export type ConversationId = Pick<
-  Conversation,
-  '_id'
->;
+export type ConversationId = Pick<Conversation, '_id'>;
