@@ -71,3 +71,10 @@ jobs:
           containerAppName: ${{ env.AZURE_CONTAINER_APP_NAME }}
           resourceGroup: ${{ env.AZURE_RESOURCE_GROUP }}
           imageToBuild: ${{ env.AZURE_CONTAINER_REGISTRY }}/chatbot-be:latest
+        env:
+          API_KEY: ${{ env.API_KEY }}
+          GOOGLE_CLIENT_ID: ${{ env.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ env.GOOGLE_CLIENT_SECRET }}
+          SERVER_ROOT_URI: ${{ env.SERVER_ROOT_URI }}
+          UI_ROOT_URI: ${{ env.UI_ROOT_URI }}
+          SWAGGER_ENABLED: ${{ env.SWAGGER_ENABLED }}
