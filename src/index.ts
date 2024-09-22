@@ -67,7 +67,6 @@ const packageJson = require('../package.json');
 
   app.listen(port, async () => {
     await connectToDb();
-    console.info(configs);
     console.info(`⚡️[server]: Server is running at http://localhost:${port}`);
   });
 })();
