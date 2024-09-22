@@ -23,6 +23,7 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
       - uses: actions/checkout@v4
@@ -71,3 +72,15 @@ jobs:
           containerAppName: ${{ env.AZURE_CONTAINER_APP_NAME }}
           resourceGroup: ${{ env.AZURE_RESOURCE_GROUP }}
           imageToBuild: ${{ env.AZURE_CONTAINER_REGISTRY }}/chatbot-be:latest
+      - name: Update the container app environment variables
+        run: |
+          az containerapp update \
+            --name ${{ env.AZURE_CONTAINER_APP_NAME }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --set-env-vars \
+              API_KEY=${{ vars.API_KEY }} \
+              GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }} \
+              GOOGLE_CLIENT_SECRET=${{ vars.GOOGLE_CLIENT_SECRET }} \
+              SERVER_ROOT_URI=${{ vars.SERVER_ROOT_URI }} \
+              UI_ROOT_URI=${{ vars.UI_ROOT_URI }} \
+              SWAGGER_ENABLED=${{ vars.SWAGGER_ENABLED }}
