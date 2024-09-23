@@ -1,4 +1,8 @@
-import { chatResponse, findChatsByConversation } from '../services';
+import {
+  chatResponsePrivate,
+  chatResponsePublic,
+  findChatsByConversation,
+} from '../services';
 import { Response, Request, Router, NextFunction } from 'express';
 import { isAuthenticated } from '../middlewares';
 
@@ -22,7 +26,7 @@ router.post(
           .json({ error: 'Invalid request body. chatData cannot be empty.' });
       }
 
-      const response = await chatResponse(chatData, userId);
+      const response = await chatResponsePrivate(chatData, userId);
       res.status(201).json({ response });
     } catch (error) {
       next(error);
@@ -34,18 +38,14 @@ router.post(
   '/public',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const chatData = req.body?.chatData;
-      if (
-        !chatData ||
-        typeof chatData.message !== 'string' ||
-        chatData.message.trim() === ''
-      ) {
+      const message = req.body?.message;
+      if (!message || typeof message !== 'string' || message.trim() === '') {
         return res
           .status(400)
           .json({ error: 'Invalid request body. chatData cannot be empty.' });
       }
 
-      const response = await chatResponse(chatData);
+      const response = await chatResponsePublic({ message });
       res.status(201).json({ response });
     } catch (error) {
       next(error);

@@ -10,6 +10,8 @@ export type CreateChatData = Omit<
 
 export type ChatDetails = Omit<Chat, 'createdAt' | 'updatedAt' | '__v'>;
 
-export type ChatRequest = Pick<Chat, 'conversationId' | 'message'>;
+export type ChatRequestPrivate = Pick<Chat, 'conversationId' | 'message'>;
+
+export type ChatRequestPublic = Pick<Chat, 'message'>;
 
 export type ChatConversationId = Pick<Chat, 'conversationId'>;
