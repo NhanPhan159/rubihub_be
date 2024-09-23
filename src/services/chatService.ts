@@ -10,10 +10,11 @@ import { AggregatePaginateModel, Types } from 'mongoose';
 import {
   Chat,
   CreateChatData,
-  ChatRequest,
   Conversation,
   ConversationDetails,
   CreateConversationData,
+  ChatRequestPublic,
+  ChatRequestPrivate,
 } from '../contracts';
 import {
   createConversation,
@@ -66,9 +67,18 @@ export const createChat = async (chatData: CreateChatData): Promise<Chat> => {
   return createdChat[0];
 };
 
-export const chatResponse = async (
-  chatData: ChatRequest,
-  userId?: Types.ObjectId,
+export const chatResponsePublic = async (
+  chatData: ChatRequestPublic,
+): Promise<string> => {
+  const result = await chat.sendMessage(chatData.message);
+  const response = result.response.text();
+
+  return response;
+};
+
+export const chatResponsePrivate = async (
+  chatData: ChatRequestPrivate,
+  userId: Types.ObjectId,
 ): Promise<{ newChat: Chat; newConversation?: Conversation }> => {
   const result = await chat.sendMessage(chatData.message);
   const response = result.response.text();
