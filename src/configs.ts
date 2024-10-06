@@ -82,7 +82,7 @@ const configs = {
       'https://www.googleapis.com/auth/userinfo.email',
     ],
     URL_TOKEN: 'https://oauth2.googleapis.com/token',
-    UI_ROOT_URI: process.env.UI_ROOT_URI || 'http://localhost:3000',
+    UI_ROOT_URI: process.env.UI_ROOT_URI || 'http://localhost:5173',
   },
 };
 

@@ -137,4 +137,10 @@ router.get(
   },
 );
 
+router.get('/logout', (_req: Request, res: Response) => {
+  res.clearCookie('auth_gg', { secure: true });
+  res.clearCookie('auth', { secure: true });
+  res.status(200).send('Logout successfully');
+});
+
 export default router;
