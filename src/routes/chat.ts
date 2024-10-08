@@ -54,11 +54,11 @@ router.post(
 );
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  const conversationData = req.body.conversationData;
+  const conversationData = req.query;
+  const conversationId = conversationData.conversationId as string
 
   try {
-    const chats = await findChatsByConversation(conversationData);
-
+    const chats = await findChatsByConversation(conversationId);
     res.status(200).json({ chats });
   } catch (error) {
     next(error);

@@ -1,13 +1,13 @@
 import { Response, Request, Router, NextFunction } from 'express';
-import { createConversation, findConversationsByUser } from '../services';
+import { createConversation, findConversationsByUserId } from '../services';
 
 const router = Router();
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  const userData = req.body.userData;
+  const user = req.body.user;
 
   try {
-    const conversations = await findConversationsByUser(userData);
+    const conversations = await findConversationsByUserId(user.id);
 
     res.status(200).json({ conversations });
   } catch (error) {

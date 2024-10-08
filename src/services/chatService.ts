@@ -83,7 +83,7 @@ export const chatResponsePrivate = async (
   const result = await chat.sendMessage(chatData.message);
   const response = result.response.text();
 
-  const conversationId = chatData.conversationId;
+  const conversationId = chatData.conversationId as Types.ObjectId;
 
   if (userId) {
     await findUserById(userId);
@@ -107,7 +107,7 @@ export const chatResponsePrivate = async (
     }
   }
 
-  const existingConversation = await findConversationById({ conversationId });
+  const existingConversation = await findConversationById(conversationId);
   if (existingConversation) {
     const chatDataToSave: CreateChatData = { ...chatData, response };
     const newChat = await createChat(chatDataToSave);
@@ -119,9 +119,9 @@ export const chatResponsePrivate = async (
 };
 
 export const findChatsByConversation = async (
-  conversationData: ConversationDetails,
+  conversationId: string | Types.ObjectId,
 ): Promise<Chat[]> => {
-  const existingConversation = await findConversation(conversationData);
+  const existingConversation = await findConversationById(conversationId);
   const existingChats = await chatModel.find({
     conversationId: existingConversation._id,
   });
