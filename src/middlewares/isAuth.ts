@@ -42,7 +42,11 @@ export const isAuthenticated = async (
             throw new ExpireTokenError();
         }
 
-        req.user = decodePayload as UserDetails;
+        req.user = {
+          _id: (decodePayload as jwt.JwtPayload)['id'],
+          email: (decodePayload as jwt.JwtPayload)['email'],
+          role: (decodePayload as jwt.JwtPayload)['role'],
+        } as UserDetails;
       },
     );
 
