@@ -8,6 +8,7 @@ export const UserSchema = createSchema(
     firstName: Type.string(),
     lastName: Type.string(),
     avatar: Type.string(),
+    role: Type.string({default:"user"})
   },
   {
     timestamps: true,

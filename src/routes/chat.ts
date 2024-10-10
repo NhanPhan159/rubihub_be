@@ -14,14 +14,14 @@ router.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const chatData = req.body?.chatData;
-      const userId = req.body?.user.id;
+      const userId = req.user._id;
 
       if (
         !chatData ||
         typeof chatData.message !== 'string' ||
         chatData.message.trim() === ''
       ) {
-        return res
+        res
           .status(400)
           .json({ error: 'Invalid request body. chatData cannot be empty.' });
       }
@@ -40,7 +40,7 @@ router.post(
     try {
       const message = req.body?.message;
       if (!message || typeof message !== 'string' || message.trim() === '') {
-        return res
+        res
           .status(400)
           .json({ error: 'Invalid request body. chatData cannot be empty.' });
       }

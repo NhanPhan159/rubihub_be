@@ -46,7 +46,7 @@ router.post(
 
       res.cookie('auth', accessToken, { httpOnly: true, secure: true });
 
-      return res.status(201).json(accessToken);
+      res.status(201).json(accessToken);
     } catch (error) {
       next(error);
     }

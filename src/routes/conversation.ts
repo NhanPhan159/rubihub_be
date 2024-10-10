@@ -18,7 +18,7 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   const conversationToCreate = {
     name: req.body.conversationData.name,
-    userId: req.body.user.id,
+    userId: req.user._id,
   };
 
   try {
