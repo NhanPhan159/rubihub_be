@@ -4,10 +4,10 @@ import { createConversation, findConversationsByUserId } from '../services';
 const router = Router();
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  const user = req.body.user;
+  const user = req.user;
 
   try {
-    const conversations = await findConversationsByUserId(user.id);
+    const conversations = await findConversationsByUserId(user._id);
 
     res.status(200).json({ conversations });
   } catch (error) {

@@ -11,17 +11,20 @@ import {
   Chat,
   CreateChatData,
   Conversation,
-  ConversationDetails,
   CreateConversationData,
   ChatRequestPublic,
   ChatRequestPrivate,
 } from '../contracts';
 import {
   createConversation,
-  findConversation,
   findConversationById,
+  findIfUserOwnConversation,
 } from './conversationService';
-import { ChatNotFoundError, ConversationNotFoundError } from '../errors';
+import {
+  ChatNotFoundError,
+  ConversationNotFoundError,
+  ConversationNotOwnedByUserError,
+} from '../errors';
 import { findUserById } from './userService';
 
 //ChatDocuments
@@ -118,17 +121,80 @@ export const chatResponsePrivate = async (
   throw new ConversationNotFoundError();
 };
 
+type ChatsByConversation = {
+  paginatedChats: Chat[];
+  isOlderChats: boolean;
+};
+
 export const findChatsByConversation = async (
+  userId: string | Types.ObjectId,
   conversationId: string | Types.ObjectId,
-): Promise<Chat[]> => {
+  startIndex: number,
+  limit: number,
+): Promise<ChatsByConversation> => {
   const existingConversation = await findConversationById(conversationId);
-  const existingChats = await chatModel.find({
-    conversationId: existingConversation._id,
+
+  // const userOwnConversation = await findIfUserOwnConversation(
+  //   userId,
+  //   conversationId,
+  // );
+
+  if (!existingConversation) {
+    throw new ConversationNotFoundError();
+  }
+  // if (!userOwnConversation) {
+  //   throw new ConversationNotOwnedByUserError();
+  // }
+
+  const paginatedChats = await findPaginatedChats(
+    conversationId,
+    startIndex,
+    limit,
+  );
+  const oldestChat = paginatedChats[limit - 1];
+
+  const isOlderChats: boolean = await findIfOlderChats(
+    oldestChat.conversationId,
+    oldestChat.createdAt,
+  );
+
+  const chats = { paginatedChats, isOlderChats };
+  return chats;
+};
+
+export const findPaginatedChats = async (
+  conversationId: string | Types.ObjectId,
+  startIndex: number,
+  limit: number,
+): Promise<Chat[]> => {
+  const paginatedChats = await chatModel
+    .find({
+      conversationId: conversationId,
+    })
+    .sort({
+      _id: -1,
+    })
+    .skip(startIndex)
+    .limit(limit);
+
+  return paginatedChats.reverse();
+};
+
+export const findIfOlderChats = async (
+  conversationId: Types.ObjectId | Conversation | undefined,
+  createdAt: Date,
+): Promise<boolean> => {
+  const olderChats = await chatModel.find({
+    $expr: {
+      $and: [
+        {
+          $eq: ['$conversationId', conversationId],
+        },
+        { $lt: ['$createdAt', createdAt] },
+      ],
+    },
   });
 
-  if (!existingChats) {
-    throw new ChatNotFoundError();
-  }
-
-  return existingChats;
+  const isOlderChats = !!olderChats.length;
+  return isOlderChats;
 };

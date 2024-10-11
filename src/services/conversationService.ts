@@ -63,9 +63,11 @@ export const findConversationsByUserId = async (
   userId: Types.ObjectId,
 ): Promise<Conversation[]> => {
   const existingUser = await findUserById(userId);
-  const existingConversations = await conversationModel.find({
-    userId: existingUser._id,
-  });
+  const existingConversations = await conversationModel
+    .find({
+      userId: existingUser._id,
+    })
+    .sort({ _id: -1 });
 
   if (!existingConversations) {
     throw new ConversationNotFoundError();
@@ -82,4 +84,17 @@ export const findConversationById = async (
   }
 
   return existingConversation;
+};
+
+export const findIfUserOwnConversation = async (
+  userId: string | Types.ObjectId,
+  conversationId: string | Types.ObjectId,
+): Promise<boolean> => {
+  const existingConversation = await conversationModel.find({
+    $expr: {
+      $and: [{ $eq: ['$_id', conversationId] }, { $eq: ['$userId', userId] }],
+    },
+  });
+
+  return !!existingConversation.length
 };
