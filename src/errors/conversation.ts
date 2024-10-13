@@ -5,3 +5,9 @@ export class ConversationNotFoundError extends Contract.AppError {
     super('Conversation not found', 'CONVERSATION_NOT_FOUND', 404);
   }
 }
+
+export class ConversationNotOwnedByUserError extends Contract.AppError {
+  constructor() {
+    super('Conversation not owned by this user', 'CONVERSATION_NOT_OWNED_BY_USER', 403);
+  }
+}

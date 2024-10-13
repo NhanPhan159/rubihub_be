@@ -84,6 +84,11 @@ const configs = {
     URL_TOKEN: 'https://oauth2.googleapis.com/token',
     UI_ROOT_URI: process.env.UI_ROOT_URI || 'http://localhost:5173',
   },
+  API_CONFIGS: {
+    CHAT: {
+      LIMIT: 10,
+    },
+  },
 };
 
 export default configs;

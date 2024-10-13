@@ -5,6 +5,7 @@ import {
 } from '../services';
 import { Response, Request, Router, NextFunction } from 'express';
 import { isAuthenticated } from '../middlewares';
+import configs from '../configs';
 
 const router = Router();
 
@@ -53,16 +54,30 @@ router.post(
   },
 );
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  const conversationData = req.body.conversationData;
+router.get(
+  '/',
+  isAuthenticated,
+  async (req: Request, res: Response, next: NextFunction) => {
+    const conversationData = req.query;
+    const conversationId = conversationData.conversationId as string;
+    const page = conversationData.page as string;
+    const limit = configs.API_CONFIGS.CHAT.LIMIT;
+    const userId = req.user?._id;
 
-  try {
-    const chats = await findChatsByConversation(conversationData);
+    const startIndex = (Number.parseInt(page) - 1) * limit;
 
-    res.status(200).json({ chats });
-  } catch (error) {
-    next(error);
-  }
-});
+    try {
+      const { paginatedChats, totalPages } = await findChatsByConversation(
+        userId,
+        conversationId,
+        startIndex,
+        limit,
+      );
+      res.status(200).json({ paginatedChats, totalPages });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default router;
