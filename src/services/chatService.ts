@@ -11,17 +11,20 @@ import {
   Chat,
   CreateChatData,
   Conversation,
-  ConversationDetails,
   CreateConversationData,
   ChatRequestPublic,
   ChatRequestPrivate,
 } from '../contracts';
 import {
   createConversation,
-  findConversation,
   findConversationById,
+  findIfUserOwnConversation,
 } from './conversationService';
-import { ChatNotFoundError, ConversationNotFoundError } from '../errors';
+import {
+  ChatNotFoundError,
+  ConversationNotFoundError,
+  ConversationNotOwnedByUserError,
+} from '../errors';
 import { findUserById } from './userService';
 
 //ChatDocuments
@@ -83,7 +86,7 @@ export const chatResponsePrivate = async (
   const result = await chat.sendMessage(chatData.message);
   const response = result.response.text();
 
-  const conversationId = chatData.conversationId;
+  const conversationId = chatData.conversationId as Types.ObjectId;
 
   if (userId) {
     await findUserById(userId);
@@ -107,7 +110,7 @@ export const chatResponsePrivate = async (
     }
   }
 
-  const existingConversation = await findConversationById({ conversationId });
+  const existingConversation = await findConversationById(conversationId);
   if (existingConversation) {
     const chatDataToSave: CreateChatData = { ...chatData, response };
     const newChat = await createChat(chatDataToSave);
@@ -118,17 +121,70 @@ export const chatResponsePrivate = async (
   throw new ConversationNotFoundError();
 };
 
-export const findChatsByConversation = async (
-  conversationData: ConversationDetails,
-): Promise<Chat[]> => {
-  const existingConversation = await findConversation(conversationData);
-  const existingChats = await chatModel.find({
-    conversationId: existingConversation._id,
-  });
+type ChatsByConversation = {
+  paginatedChats: Chat[];
+  totalPages: number;
+};
 
-  if (!existingChats) {
-    throw new ChatNotFoundError();
+export const findChatsByConversation = async (
+  userId: string | Types.ObjectId,
+  conversationId: string | Types.ObjectId,
+  startIndex: number,
+  limit: number,
+): Promise<ChatsByConversation> => {
+  const existingConversation = await findConversationById(conversationId);
+
+  const userOwnConversation = await findIfUserOwnConversation(
+    userId,
+    conversationId,
+  );
+
+  if (!existingConversation) {
+    throw new ConversationNotFoundError();
+  }
+  if (!userOwnConversation) {
+    throw new ConversationNotOwnedByUserError();
   }
 
-  return existingChats;
+  const paginatedChats = await findPaginatedChats(
+    conversationId,
+    startIndex,
+    limit,
+  );
+  const oldestChat = paginatedChats[0];
+
+  const totalPages: number = await findTotalPages(
+    oldestChat.conversationId,
+    limit,
+  );
+
+  return { paginatedChats, totalPages };
+};
+
+export const findPaginatedChats = async (
+  conversationId: string | Types.ObjectId,
+  startIndex: number,
+  limit: number,
+): Promise<Chat[]> => {
+  const paginatedChats = await chatModel
+    .find({
+      conversationId: conversationId,
+    })
+    .sort({
+      _id: -1,
+    })
+    .skip(startIndex)
+    .limit(limit);
+
+  return paginatedChats.reverse();
+};
+
+export const findTotalPages = async (
+  conversationId: Types.ObjectId | Conversation | undefined,
+  limit: number,
+): Promise<number> => {
+  const totalChats = await chatModel.countDocuments({ conversationId });
+  const totalPages = Math.ceil(totalChats / limit);
+
+  return totalPages;
 };

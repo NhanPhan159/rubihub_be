@@ -39,6 +39,7 @@ export const authenticateUser = async (
   const accessToken = generateJWT({
     id: user._id,
     email: user.email,
+    role: user.role
   });
 
   return {

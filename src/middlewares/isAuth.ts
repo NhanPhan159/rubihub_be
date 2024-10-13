@@ -4,12 +4,13 @@ import {
   InvalidTokenError,
   UnauthenticatedError,
 } from '../errors/auth';
+import { UserDetails } from '../contracts';
 import jwt from 'jsonwebtoken';
 import configs from '../configs';
 
 export const isAuthenticated = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
@@ -41,7 +42,11 @@ export const isAuthenticated = async (
             throw new ExpireTokenError();
         }
 
-        req.body.user = decodePayload;
+        req.user = {
+          _id: (decodePayload as jwt.JwtPayload)['id'],
+          email: (decodePayload as jwt.JwtPayload)['email'],
+          role: (decodePayload as jwt.JwtPayload)['role'],
+        } as UserDetails;
       },
     );
 

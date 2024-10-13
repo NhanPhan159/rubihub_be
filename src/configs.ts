@@ -14,7 +14,7 @@ const configs = {
   },
   GEMINI_CONFIG: {
     GENERATION_CONFIG: {
-      temperature: 0.6,
+      temperature: 2.0,
       topK: 1,
       topP: 0.5,
       maxOutputTokens: 1000,
@@ -83,6 +83,11 @@ const configs = {
     ],
     URL_TOKEN: 'https://oauth2.googleapis.com/token',
     UI_ROOT_URI: process.env.UI_ROOT_URI || 'http://localhost:5173',
+  },
+  API_CONFIGS: {
+    CHAT: {
+      LIMIT: 10,
+    },
   },
 };
 

@@ -1,13 +1,13 @@
 import { Response, Request, Router, NextFunction } from 'express';
-import { createConversation, findConversationsByUser } from '../services';
+import { createConversation, findConversationsByUserId } from '../services';
 
 const router = Router();
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  const userData = req.body.userData;
+  const user = req.user;
 
   try {
-    const conversations = await findConversationsByUser(userData);
+    const conversations = await findConversationsByUserId(user._id);
 
     res.status(200).json({ conversations });
   } catch (error) {
@@ -18,7 +18,7 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   const conversationToCreate = {
     name: req.body.conversationData.name,
-    userId: req.body.user.id,
+    userId: req.user._id,
   };
 
   try {

@@ -5,6 +5,7 @@ import {
 } from '../services';
 import { Response, Request, Router, NextFunction } from 'express';
 import { isAuthenticated } from '../middlewares';
+import configs from '../configs';
 
 const router = Router();
 
@@ -14,14 +15,14 @@ router.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const chatData = req.body?.chatData;
-      const userId = req.body?.user.id;
+      const userId = req.user._id;
 
       if (
         !chatData ||
         typeof chatData.message !== 'string' ||
         chatData.message.trim() === ''
       ) {
-        return res
+        res
           .status(400)
           .json({ error: 'Invalid request body. chatData cannot be empty.' });
       }
@@ -40,7 +41,7 @@ router.post(
     try {
       const message = req.body?.message;
       if (!message || typeof message !== 'string' || message.trim() === '') {
-        return res
+        res
           .status(400)
           .json({ error: 'Invalid request body. chatData cannot be empty.' });
       }
@@ -53,16 +54,30 @@ router.post(
   },
 );
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  const conversationData = req.body.conversationData;
+router.get(
+  '/',
+  isAuthenticated,
+  async (req: Request, res: Response, next: NextFunction) => {
+    const conversationData = req.query;
+    const conversationId = conversationData.conversationId as string;
+    const page = conversationData.page as string;
+    const limit = configs.API_CONFIGS.CHAT.LIMIT;
+    const userId = req.user?._id;
 
-  try {
-    const chats = await findChatsByConversation(conversationData);
+    const startIndex = (Number.parseInt(page) - 1) * limit;
 
-    res.status(200).json({ chats });
-  } catch (error) {
-    next(error);
-  }
-});
+    try {
+      const { paginatedChats, totalPages } = await findChatsByConversation(
+        userId,
+        conversationId,
+        startIndex,
+        limit,
+      );
+      res.status(200).json({ paginatedChats, totalPages });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default router;

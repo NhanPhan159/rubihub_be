@@ -7,7 +7,7 @@ router.get(
   '/profile',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = req.body.user.id;
+      const userId = req.user?._id;
 
       const { _id, ...user } = await findUserById(userId);
 
