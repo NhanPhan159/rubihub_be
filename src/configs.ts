@@ -86,7 +86,7 @@ const configs = {
   },
   API_CONFIGS: {
     CHAT: {
-      LIMIT: 5,
+      LIMIT: 10,
     },
   },
 };

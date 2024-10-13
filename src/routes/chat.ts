@@ -54,27 +54,30 @@ router.post(
   },
 );
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  const conversationData = req.query;
-  const conversationId = conversationData.conversationId as string;
-  const page = conversationData.page as string;
-  const limit = configs.API_CONFIGS.CHAT.LIMIT;
-  console.log(req.user) 
-  const userId = req.user?._id;
+router.get(
+  '/',
+  isAuthenticated,
+  async (req: Request, res: Response, next: NextFunction) => {
+    const conversationData = req.query;
+    const conversationId = conversationData.conversationId as string;
+    const page = conversationData.page as string;
+    const limit = configs.API_CONFIGS.CHAT.LIMIT;
+    const userId = req.user?._id;
 
-  const startIndex = (Number.parseInt(page) - 1) * limit;
+    const startIndex = (Number.parseInt(page) - 1) * limit;
 
-  try {
-    const chats = await findChatsByConversation(
-      userId,
-      conversationId,
-      startIndex,
-      limit,
-    );
-    res.status(200).json({ chats });
-  } catch (error) {
-    next(error);
-  }
-});
+    try {
+      const { paginatedChats, totalPages } = await findChatsByConversation(
+        userId,
+        conversationId,
+        startIndex,
+        limit,
+      );
+      res.status(200).json({ paginatedChats, totalPages });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default router;

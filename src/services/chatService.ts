@@ -123,7 +123,7 @@ export const chatResponsePrivate = async (
 
 type ChatsByConversation = {
   paginatedChats: Chat[];
-  isOlderChats: boolean;
+  totalPages: number;
 };
 
 export const findChatsByConversation = async (
@@ -134,32 +134,31 @@ export const findChatsByConversation = async (
 ): Promise<ChatsByConversation> => {
   const existingConversation = await findConversationById(conversationId);
 
-  // const userOwnConversation = await findIfUserOwnConversation(
-  //   userId,
-  //   conversationId,
-  // );
+  const userOwnConversation = await findIfUserOwnConversation(
+    userId,
+    conversationId,
+  );
 
   if (!existingConversation) {
     throw new ConversationNotFoundError();
   }
-  // if (!userOwnConversation) {
-  //   throw new ConversationNotOwnedByUserError();
-  // }
+  if (!userOwnConversation) {
+    throw new ConversationNotOwnedByUserError();
+  }
 
   const paginatedChats = await findPaginatedChats(
     conversationId,
     startIndex,
     limit,
   );
-  const oldestChat = paginatedChats[limit - 1];
+  const oldestChat = paginatedChats[0];
 
-  const isOlderChats: boolean = await findIfOlderChats(
+  const totalPages: number = await findTotalPages(
     oldestChat.conversationId,
-    oldestChat.createdAt,
+    limit,
   );
 
-  const chats = { paginatedChats, isOlderChats };
-  return chats;
+  return { paginatedChats, totalPages };
 };
 
 export const findPaginatedChats = async (
@@ -180,21 +179,12 @@ export const findPaginatedChats = async (
   return paginatedChats.reverse();
 };
 
-export const findIfOlderChats = async (
+export const findTotalPages = async (
   conversationId: Types.ObjectId | Conversation | undefined,
-  createdAt: Date,
-): Promise<boolean> => {
-  const olderChats = await chatModel.find({
-    $expr: {
-      $and: [
-        {
-          $eq: ['$conversationId', conversationId],
-        },
-        { $lt: ['$createdAt', createdAt] },
-      ],
-    },
-  });
+  limit: number,
+): Promise<number> => {
+  const totalChats = await chatModel.countDocuments({ conversationId });
+  const totalPages = Math.ceil(totalChats / limit);
 
-  const isOlderChats = !!olderChats.length;
-  return isOlderChats;
+  return totalPages;
 };
