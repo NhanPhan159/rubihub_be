@@ -92,5 +92,5 @@ export const findIfUserOwnConversation = async (
     },
   });
 
-  return !!existingConversation.length
+  return !!existingConversation.length;
 };

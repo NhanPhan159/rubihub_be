@@ -60,9 +60,11 @@ const packageJson = require('../package.json');
     }
   }
 
-  app.use(cors({
-    origin: '*',
-  }));
+  app.use(
+    cors({
+      origin: '*',
+    }),
+  );
   app.use(bodyParser.json());
   app.use('/api', router);
   app.use(errorHandler);

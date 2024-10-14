@@ -6,7 +6,12 @@ import {
 import configs from '../configs';
 import { ChatSchema, dbContext, useTransaction } from '../data';
 import { ExtractDoc } from 'ts-mongoose';
-import { AggregatePaginateModel, AggregatePaginateResult, PaginateOptions, Types } from 'mongoose';
+import {
+  AggregatePaginateModel,
+  AggregatePaginateResult,
+  PaginateOptions,
+  Types,
+} from 'mongoose';
 import {
   Chat,
   CreateChatData,
@@ -19,14 +24,14 @@ import {
   createConversation,
   findConversationById,
 } from './conversationService';
-import {
-  ConversationNotFoundError,
-} from '../errors';
+import { ConversationNotFoundError } from '../errors';
 import { Pagination } from '../types';
 
 type ChatDocument = ExtractDoc<typeof ChatSchema>;
 
-const chatModel = dbContext.model<ChatDocument>('Chat') as AggregatePaginateModel<ChatDocument>;
+const chatModel = dbContext.model<ChatDocument>(
+  'Chat',
+) as AggregatePaginateModel<ChatDocument>;
 
 const MODEL_NAME = configs.AI_GENERATIVE.MODEL_NAME;
 const API_KEY = configs.AI_GENERATIVE.API_KEY;
@@ -34,7 +39,6 @@ const generationConfig = configs.GEMINI_CONFIG.GENERATION_CONFIG;
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const aiModel = genAI.getGenerativeModel({ model: MODEL_NAME });
-
 
 const safetySettings = [
   {
@@ -108,7 +112,7 @@ export const chatResponsePrivate = async (
 
 export const findChatsByConversation = async (
   conversationId: string,
-  pagination?: Pagination | null
+  pagination?: Pagination | null,
 ): Promise<AggregatePaginateResult<ChatDocument>> => {
   const existingConversation = await findConversationById(conversationId);
 
@@ -122,11 +126,6 @@ export const findChatsByConversation = async (
         conversationId: new Types.ObjectId(conversationId),
       },
     },
-    {
-      $sort: {
-        createdAt: -1,
-      },
-    }
   ]);
 
   if (pagination) {
@@ -136,7 +135,10 @@ export const findChatsByConversation = async (
       pagination: true,
     };
 
-    const paginatedResult = await chatModel.aggregatePaginate<ChatDocument>(aggregateQuery, options);
+    const paginatedResult = await chatModel.aggregatePaginate<ChatDocument>(
+      aggregateQuery,
+      options,
+    );
 
     return paginatedResult;
   }

@@ -1,9 +1,9 @@
 import { UserDetails } from './contracts';
 
 declare global {
-    namespace Express {
-        interface Request {
-            user: UserDetails;
-        }
+  namespace Express {
+    interface Request {
+      user: UserDetails;
     }
+  }
 }
