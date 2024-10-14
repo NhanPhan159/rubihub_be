@@ -3,7 +3,12 @@ import { stringify } from 'querystring';
 import axios from 'axios';
 
 import configs from '../configs';
-import { UserCredentials, AccessToken, GoogleCredentials, GoogleTokens } from '../contracts';
+import {
+  UserCredentials,
+  AccessToken,
+  GoogleCredentials,
+  GoogleTokens,
+} from '../contracts';
 import {
   GoogleAuthError,
   IncorrectPasswordError,
@@ -39,7 +44,7 @@ export const authenticateUser = async (
   const accessToken = generateJWT({
     id: user._id,
     email: user.email,
-    role: user.role
+    role: user.role,
   });
 
   return {
@@ -64,15 +69,11 @@ export const getTokens = async ({
     grant_type: 'authorization_code',
   };
 
-  const response = await axios.post(
-    url,
-    stringify(values),
-    {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+  const response = await axios.post(url, stringify(values), {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-  );
+  });
 
   if (response.status !== 200) {
     throw new GoogleAuthError();

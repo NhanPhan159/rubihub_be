@@ -5,7 +5,6 @@ import {
 } from '../services';
 import { Response, Request, Router, NextFunction } from 'express';
 import { isAuthenticated } from '../middlewares';
-import configs from '../configs';
 import { getPagination } from '../utils';
 
 const router = Router();
