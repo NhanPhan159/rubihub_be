@@ -13,13 +13,9 @@ import { ConversationNotFoundError } from '../errors';
 
 type ConversationDocument = ExtractDoc<typeof ConversationSchema>;
 
-let conversationModel: AggregatePaginateModel<ConversationDocument>;
-
-(async (): Promise<void> => {
-  conversationModel = dbContext.model<ConversationDocument>(
-    'Conversation',
-  ) as AggregatePaginateModel<ConversationDocument>;
-})();
+const conversationModel = dbContext.model<ConversationDocument>(
+  'Conversation',
+) as AggregatePaginateModel<ConversationDocument>;
 
 export const createConversation = async (
   conversationData: CreateConversationData,
