@@ -112,7 +112,7 @@ export const chatResponsePrivate = async (
 
 export const findChatsByConversation = async (
   conversationId: string,
-  pagination?: Pagination | null
+  pagination?: Pagination | null,
 ): Promise<AggregatePaginateResult<ChatDocument>> => {
   const existingConversation = await findConversationById(conversationId);
 
