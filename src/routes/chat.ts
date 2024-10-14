@@ -5,7 +5,6 @@ import {
 } from '../services';
 import { Response, Request, Router, NextFunction } from 'express';
 import { isAuthenticated } from '../middlewares';
-import configs from '../configs';
 import { getPagination } from '../utils';
 
 const router = Router();
@@ -65,16 +64,16 @@ router.get(
     const pagination =
       req.query.page && req.query.limit
         ? getPagination(
-            req.query.page as string,
-            req.query.limit as string,
-            req.query.offset as string,
-          )
+          req.query.page as string,
+          req.query.limit as string,
+          req.query.offset as string,
+        )
         : null;
 
     try {
       const paginatedChats = await findChatsByConversation(
         conversationId,
-        pagination,
+        pagination
       );
       res.status(200).json(paginatedChats);
     } catch (error) {
