@@ -133,6 +133,7 @@ export const findChatsByConversation = async (
       page: pagination.page,
       limit: pagination.limit,
       pagination: true,
+      sort: { createdAt: -1 }
     };
 
     const paginatedResult = await chatModel.aggregatePaginate<ChatDocument>(
@@ -140,10 +141,15 @@ export const findChatsByConversation = async (
       options,
     );
 
+    paginatedResult.docs.sort((a, b) => {
+      return a.createdAt.getTime() - b.createdAt.getTime();
+    });
+
     return paginatedResult;
   }
 
   return await chatModel.aggregatePaginate<ChatDocument>(aggregateQuery, {
     pagination: false,
+    sort: { createdAt: -1 }
   });
 };
