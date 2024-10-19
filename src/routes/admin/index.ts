@@ -10,7 +10,7 @@ router.get(
         const result = await requestsInWeek(
           new Date(req.query.currentDate as string),
         );
-        return res.json(result);
+        res.json(result);
       }
       throw new Error('missing params');
     } catch (error) {
