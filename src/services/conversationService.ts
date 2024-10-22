@@ -94,3 +94,20 @@ export const findIfUserOwnConversation = async (
 
   return !!existingConversation.length;
 };
+
+export const updateConversation = async (
+  conversationId: string,
+  conversationName: string,
+): Promise<Conversation> => {
+  const existingConversation = await conversationModel.findByIdAndUpdate(
+    conversationId,
+    { name: conversationName },
+    { new: true },
+  );
+
+  if (!existingConversation) {
+    throw new ConversationNotFoundError();
+  }
+
+  return existingConversation;
+};
