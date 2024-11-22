@@ -9,7 +9,7 @@ const configs = {
     process.env.SWAGGER_ENABLED || false,
   ),
   AI_GENERATIVE: {
-    MODEL_NAME: 'gemini-1.5-flash',
+    MODEL_NAME: 'gemini-1.5-flash-002',
     API_KEY: process.env.API_KEY!,
   },
   GEMINI_CONFIG: {
