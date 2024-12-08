@@ -4,3 +4,4 @@ export * from './jwt';
 export * from './wrapper';
 export * from './googleUrlOAuth2';
 export * from './pagination';
+export * from './genAI';
