@@ -1,9 +1,3 @@
-import {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} from '@google/generative-ai';
-import configs from '../configs';
 import { ChatSchema, dbContext, useTransaction } from '../data';
 import { ExtractDoc } from 'ts-mongoose';
 import {
@@ -26,6 +20,7 @@ import {
 } from './conversationService';
 import { ConversationNotFoundError } from '../errors';
 import { Pagination } from '../types';
+import { connectToAI } from '../utils';
 
 type ChatDocument = ExtractDoc<typeof ChatSchema>;
 
@@ -33,26 +28,7 @@ const chatModel = dbContext.model<ChatDocument>(
   'Chat',
 ) as AggregatePaginateModel<ChatDocument>;
 
-const MODEL_NAME = configs.AI_GENERATIVE.MODEL_NAME;
-const API_KEY = configs.AI_GENERATIVE.API_KEY;
-const generationConfig = configs.GEMINI_CONFIG.GENERATION_CONFIG;
-
-const genAI = new GoogleGenerativeAI(API_KEY);
-const aiModel = genAI.getGenerativeModel({ model: MODEL_NAME });
-
-const safetySettings = [
-  {
-    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  // ... other safety settings
-];
-
-const chat = aiModel.startChat({
-  generationConfig,
-  safetySettings,
-  history: configs.GEMINI_CONFIG.HISTORY,
-});
+const chat = connectToAI();
 
 export const createChat = async (chatData: CreateChatData): Promise<Chat> => {
   const createdChat = await useTransaction(async (session) => {

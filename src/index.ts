@@ -11,6 +11,7 @@ import { errorHandler } from './middlewares';
 import configs from './configs';
 import { logger } from './utils';
 import { connectToDb } from './data';
+import jobSchedules from './jobs';
 
 const packageJson = require('../package.json');
 
@@ -73,4 +74,6 @@ const packageJson = require('../package.json');
     await connectToDb();
     console.info(`⚡️[server]: Server is running at http://localhost:${port}`);
   });
+
+  jobSchedules.start();
 })();
