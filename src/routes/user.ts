@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { findUserById } from '../services';
+import { findUserById, updateProfile } from '../services';
 
 const router = Router();
 
@@ -20,5 +20,16 @@ router.get(
     }
   },
 );
+router.put('/profile',async(req:Request, res:Response, next: NextFunction) => {
+  try {
+    const userId = req.user?._id;
+    const resultNumber = await updateProfile(userId.toString(),req.body)
+    if(resultNumber){
+      res.json({"message": "successfully updated"}).status(200)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 export default router;

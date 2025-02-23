@@ -2,7 +2,7 @@ import { typedModel } from 'ts-mongoose';
 import { UserSchema } from './user';
 import { ConversationSchema } from './conversation';
 import { ChatSchema } from './chat';
-
+import { QuestionSchema } from './question';
 const modelDefinitions = () => {
   return [
     {
@@ -17,6 +17,10 @@ const modelDefinitions = () => {
       name: 'Chat',
       schema: ChatSchema,
     },
+    {
+      name: 'Question',
+      schema:QuestionSchema,
+    },
   ];
 };
 
@@ -28,4 +32,4 @@ const modelDefinitions = () => {
   }
 })();
 
-export { UserSchema, ConversationSchema, ChatSchema };
+export { UserSchema, ConversationSchema, ChatSchema, QuestionSchema };

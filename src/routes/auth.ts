@@ -21,7 +21,7 @@ import {
   generateRandomPassword,
   generateUrlGoogle,
 } from '../utils';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 import axios from 'axios';
 
 const router = Router();
@@ -114,7 +114,7 @@ router.get(
         email: '',
         createdAt: new Date(),
         updatedAt: new Date(),
-        _id: new ObjectId(),
+        _id: new Types.ObjectId(),
       };
 
       if (!(await checkIfEmailExist(data.email))) {

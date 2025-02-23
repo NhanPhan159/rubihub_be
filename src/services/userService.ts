@@ -74,3 +74,8 @@ export const checkIfEmailExist = async (email: string): Promise<Boolean> => {
   if (existingUser) return true;
   return false;
 };
+
+export const updateProfile = async (idUser:string,userData:Partial<User>): Promise<Number> => {
+  const userUpdate = await model.findById(idUser).updateOne(userData)
+  return userUpdate.modifiedCount
+}
