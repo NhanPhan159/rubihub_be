@@ -27,11 +27,11 @@ export const logSummaryUserActivities = async (
         as: 'chat_user',
       },
     },
-    // {
-    //   $match: {
-    //     createdAt: { $gte: date, $lt: nextDate },
-    //   },
-    // },
+     {
+       $match: {
+         createdAt: { $gte: date, $lt: nextDate },
+       },
+     },
     {
       $group: {
         _id: '$chat_user.email',
