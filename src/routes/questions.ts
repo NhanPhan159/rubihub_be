@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createQuestion } from "../services";
+import { createQuestion, getAllQuestions } from "../services";
 import Joi from "joi";
 import { CreateQuestionData } from "../contracts/types/models/question";
 
@@ -20,4 +20,8 @@ route.post("/",async (req,res,next)=>{
     res.json({message: "create success!!!",data:data}).status(200)
 })
 
+route.get("/",async (req,res)=>{
+  const result = await getAllQuestions()
+  res.json({message: "get successfully",data:result})
+})
 export default route

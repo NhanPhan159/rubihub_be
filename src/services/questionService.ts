@@ -17,3 +17,8 @@ export const createQuestion = async (
   return createdQuestion[0];
 };
 
+export const getAllQuestions = async ():Promise<Question[]> => {
+  const questionsDoc = await model.find()
+  return questionsDoc
+}
+
