@@ -9,6 +9,7 @@ export const QuestionSchema = createSchema(
     answerB: Type.string({ required: true }),
     answerC: Type.string({ required: true }),
     answerD: Type.string({ required: true }),
+    rightAnswer: Type.string({required:true})
   },
   {
     timestamps: true,

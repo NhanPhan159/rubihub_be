@@ -12,6 +12,7 @@ route.post("/",async (req,res,next)=>{
     answerB: Joi.string().required(),
     answerC: Joi.string().required(),
     answerD: Joi.string().required(),
+    rightAnswer: Joi.string().required(),
     questionContent: Joi.string().required()
   }).validateAsync(questionBody)
   const data = await createQuestion(validatedQuestion)
