@@ -11,7 +11,7 @@ import { Role } from '../enum';
 const router = Router();
 
 router.use('/auth', authRouter);
-router.use('/chat', chatRouter);
+router.use('/chats', chatRouter);
 router.use(isAuthenticated);
 router.use('/users', userRouter);
 router.use('/conversations', conversationRouter);
